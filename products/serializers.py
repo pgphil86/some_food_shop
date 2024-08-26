@@ -1,9 +1,12 @@
 from rest_framework import serializers
 
-from .models import Cart, CartItem, Category, Product, Subcategory
+from .models import Cart, Category, Product, Subcategory
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    """
+    Сериализатор категории.
+    """
     subcategories = serializers.SerializerMethodField()
 
     class Meta:
@@ -22,10 +25,13 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class SubcategorySerializer(serializers.ModelSerializer):
+    """
+    Сериализатор подкатегории.
+    """
 
     class Meta:
         model = Subcategory
-        fields =[
+        fields = [
             'id',
             'name',
             'slug',
@@ -35,6 +41,9 @@ class SubcategorySerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор продукта.
+    """
     subcategory = SubcategorySerializer()
 
     class Meta:
@@ -51,31 +60,18 @@ class ProductSerializer(serializers.ModelSerializer):
         ]
 
 
-class CartItemSerializer(serializers.ModelSerializer):
-    product = ProductSerializer()
-
-    class Meta:
-        model = CartItem
-        fields = [
-            'id',
-            'product',
-            'quantity'
-        ]
-
-
 class CartSerializer(serializers.ModelSerializer):
-    items = CartItemSerializer(many=True)
+    """
+    Сериализатор корзины.
+    """
+    items = ProductSerializer()
 
     class Meta:
         model = Cart
         fields = [
             'id',
             'user',
-            'items'
+            'product',
+            'quantity',
+            'total_price'
         ]
-
-    def get_total_items(self, obj):
-        return sum(item.quantity for item in obj.items.all())
-
-    def get_total_price(self, obj):
-        return sum(item.quantity * item.product.price for item in obj.item.all)
