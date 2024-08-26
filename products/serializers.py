@@ -44,7 +44,13 @@ class ProductSerializer(serializers.ModelSerializer):
     """
     Сериализатор продукта.
     """
-    subcategory = SubcategorySerializer()
+    subcategory = SubcategorySerializer(many=True, read_only=True)
+    image_small = serializers.ImageField(source='image.thumbnail_100x100',
+                                         read_only=True)
+    image_medium = serializers.ImageField(source='image.thumbnail_300x300',
+                                          read_only=True)
+    image_large = serializers.ImageField(source='image.thumbnail_600x600',
+                                         read_only=True)
 
     class Meta:
         model = Product

@@ -2,10 +2,12 @@ from rest_framework import generics, status, views
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from . models import Cart, Category, Product
+from . models import Cart, Category, Product, Subcategory
+from .pagination import PagePagination
 from .serializers import (CartSerializer,
                           CategorySerializer,
-                          ProductSerializer
+                          ProductSerializer,
+                          SubcategorySerializer
                           )
 
 
@@ -15,7 +17,16 @@ class CategoryListView(generics.ListAPIView):
     """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    pagination_class = None
+    pagination_class = PagePagination
+
+
+class SubcategoryListView(generics.ListAPIView):
+    """
+    Вью для подкатегорий.
+    """
+    queryset = Subcategory.objects.all()
+    serializer_class = SubcategorySerializer
+    pagination_class = PagePagination
 
 
 class ProductListView(generics.ListAPIView):
@@ -24,7 +35,7 @@ class ProductListView(generics.ListAPIView):
     """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    pagination_class = None
+    pagination_class = PagePagination
 
 
 class CartView(views.APIView):
