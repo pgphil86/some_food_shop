@@ -14,6 +14,11 @@ class Category(models.Model):
     image = models.ImageField(upload_to='img/categories/', blank=False)
 
     def save(self, *args, **kwargs):
+        """
+        Переопределяет метод сохранения для
+        автоматической генерации слага подкатегории,
+        если он не был указан.
+        """
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
@@ -36,6 +41,11 @@ class Subcategory(models.Model):
     )
 
     def save(self, *args, **kwargs):
+        """
+        Переопределяет метод сохранения для
+        автоматической генерации слага подкатегории,
+        если он не был указан.
+        """
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
@@ -64,17 +74,27 @@ class Product(models.Model):
         on_delete=models.CASCADE,
     )
 
-    def clean(self):
-        if self.price is None or self.price <= 0:
-            raise ValidationError('Цена должна быть положительным числом.')
-        if self.price > 9999999.99:
-            raise ValidationError('Цена слишком велика.')
-
     def save(self, *args, **kwargs):
+        """
+        Переопределяет метод сохранения для
+        автоматической генерации слага подкатегории,
+        если он не был указан.
+        """
         self.clean()
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    def clean(self):
+        """
+        Очищает данные продукта перед сохранением, проверяя,
+        является ли цена положительным числом
+        и не превышает ли она допустимый лимит.
+        """
+        if self.price is None or self.price <= 0:
+            raise ValidationError('Цена должна быть положительным числом.')
+        if self.price > 9999999.99:
+            raise ValidationError('Цена слишком велика.')
 
     def __str__(self):
         return self.name
@@ -94,8 +114,11 @@ class Cart(models.Model):
     )
     quantity = models.PositiveSmallIntegerField(default=1)
 
+    def total_price(self):
+        """
+        Рассчитывает общую стоимость продуктов в корзине.
+        """
+        return self.quantity * self.product.price
+
     def __str__(self):
         return f'Корзина {self.user.username} {self.product.name}'
-
-    def total_price(self):
-        return self.quantity * self.product.price

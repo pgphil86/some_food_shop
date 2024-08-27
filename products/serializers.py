@@ -20,6 +20,9 @@ class CategorySerializer(serializers.ModelSerializer):
         ]
 
     def get_subcategories(self, obj):
+        """
+        Возвращает сериализованные данные всех подкатегорий.
+        """
         subcategories = obj.subcategories.all()
         return SubcategorySerializer(subcategories, many=True).data
 
@@ -44,13 +47,11 @@ class ProductSerializer(serializers.ModelSerializer):
     """
     Сериализатор продукта.
     """
-    subcategory = SubcategorySerializer(many=True, read_only=True)
-    image_small = serializers.ImageField(source='image.thumbnail_100x100',
-                                         read_only=True)
-    image_medium = serializers.ImageField(source='image.thumbnail_300x300',
-                                          read_only=True)
-    image_large = serializers.ImageField(source='image.thumbnail_600x600',
-                                         read_only=True)
+    category = serializers.CharField(source='subcategory.category.name',
+                                     read_only=True)
+    subcategory = serializers.CharField(source='subcategory.name',
+                                        read_only=True)
+    images = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -58,19 +59,29 @@ class ProductSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'slug',
+            'category',
             'subcategory',
             'price',
-            'image1',
-            'image2',
-            'image3'
+            'images'
         ]
+
+    def get_images(self, obj):
+        """
+        Возвращает словарь с URL-адресами
+        изображений продукта в разных размерах.
+        """
+        return {
+            'small': obj.image.thumbnail['small'].url if obj.image else None,
+            'medium': obj.image.thumbnail['medium'].url if obj.image else None,
+            'large': obj.image.thumbnail['large'].url if obj.image else None,
+        }
 
 
 class CartSerializer(serializers.ModelSerializer):
     """
     Сериализатор корзины.
     """
-    items = ProductSerializer()
+    product = ProductSerializer()
 
     class Meta:
         model = Cart
