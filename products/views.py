@@ -88,7 +88,7 @@ class CartView(views.APIView):
             return Response(CartSerializer(cart_item).data,
                             status=status.HTTP_201_CREATED)
         except Product.DoesNotExist:
-            return Response({'error': 'Product not found'},
+            return Response({'error': 'Продукт не найден.'},
                             status=status.HTTP_404_NOT_FOUND)
 
     def put(self, request, *args, **kwargs):
@@ -105,10 +105,10 @@ class CartView(views.APIView):
                 cart_item.save()
                 return Response(CartSerializer(cart_item).data)
             else:
-                return Response({'error': 'Quantity must be greater than 0'},
+                return Response({'error': 'Количество должно быть больше 0.'},
                                 status=status.HTTP_400_BAD_REQUEST)
         except Cart.DoesNotExist:
-            return Response({'error': 'Item not found in cart'},
+            return Response({'error': 'Не найден в корзине.'},
                             status=status.HTTP_404_NOT_FOUND)
 
     def delete(self, request, *args, **kwargs):
@@ -122,5 +122,5 @@ class CartView(views.APIView):
             cart_item.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Cart.DoesNotExist:
-            return Response({'error': 'Item not found in cart'},
+            return Response({'error': 'Не найден в корзине.'},
                             status=status.HTTP_404_NOT_FOUND)
