@@ -10,7 +10,7 @@ class Category(models.Model):
     Модель категории продуктов.
     """
     name = models.CharField(max_length=25)
-    slug = models.SlugField(unique=True, max_length=25)
+    slug = models.SlugField(unique=True, max_length=25, blank=True)
     image = models.ImageField(upload_to='img/categories/', blank=False)
 
     def save(self, *args, **kwargs):
@@ -32,7 +32,7 @@ class Subcategory(models.Model):
     Модель подкатегории продукта.
     """
     name = models.CharField(max_length=25)
-    slug = models.SlugField(unique=True, max_length=25)
+    slug = models.SlugField(unique=True, max_length=25, blank=True)
     image = models.ImageField(upload_to='img/subcategories/', blank=False)
     category = models.ForeignKey(
         Category,
@@ -59,7 +59,7 @@ class Product(models.Model):
     Модель продуктов.
     """
     name = models.CharField(max_length=25)
-    slug = models.SlugField(unique=True, max_length=25)
+    slug = models.SlugField(unique=True, max_length=25, blank=True)
     image = VersatileImageField(
         'Image',
         upload_to='img/products/',
