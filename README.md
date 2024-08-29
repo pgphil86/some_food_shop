@@ -49,7 +49,7 @@ pytest
 ### Автор проекта:
 Павел Филиппов
 
-[Вверх]()
+[Вверх](https://github.com/pgphil86/some_food_shop?tab=readme-ov-file#тестовое-задание---some-food-shop)
 
 # The test task is "Some food shop".
 
@@ -102,4 +102,4 @@ pytest
 ### Author of the project:
 Pavel Filippov
 
-[Up]()
+[Up](https://github.com/pgphil86/some_food_shop?tab=readme-ov-file#тестовое-задание---some-food-shop)
